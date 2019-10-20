@@ -1,21 +1,13 @@
 import * as Yup from 'yup';
+import BaseValidator from './BaseValidator';
 
-class SessionsValidator {
-  static get SCHEMA_VALIDATION_ERROR() {
-    return 'Schema validation fails';
-  }
-
+class SessionsValidator extends BaseValidator {
   static get USER_NOT_FOUND_ERROR() {
     return 'User not found';
   }
 
   static get NOT_MATCHING_PASSWORD() {
     return 'Password does not match';
-  }
-
-  constructor(req, res) {
-    this.req = req;
-    this.res = res;
   }
 
   async validateStoreSchema() {
