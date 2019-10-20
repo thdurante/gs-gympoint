@@ -12,7 +12,22 @@ class StudentsController {
     return res.json(student);
   }
 
-  async update(req, res) {}
+  async update(req, res) {
+    const studentsValidator = new StudentsValidator(req, res);
+    await studentsValidator.validateUpdateSchema();
+
+    const { id } = req.params;
+    let student = await Student.findByPk(id);
+    studentsValidator.validateExistingStudent(student);
+
+    const { email } = req.body;
+
+    if (email && email !== student.email)
+      await studentsValidator.validateStudentAlreadyExists();
+
+    student = await student.update(req.body);
+    return res.json(student);
+  }
 }
 
 export default new StudentsController();

@@ -7,6 +7,10 @@ class StudentsValidator extends BaseValidator {
     return 'Student already exists';
   }
 
+  static get STUDENT_NOT_FOUND_ERROR() {
+    return 'Student was not found';
+  }
+
   async validateStoreSchema() {
     const storeSchema = Yup.object().shape({
       name: Yup.string().required(),
@@ -32,6 +36,28 @@ class StudentsValidator extends BaseValidator {
       return this.res.status(400).json({
         error: StudentsValidator.STUDENT_ALREADY_EXISTS_ERROR,
       });
+  }
+
+  async validateUpdateSchema() {
+    const updateSchema = Yup.object().shape({
+      name: Yup.string(),
+      email: Yup.string().email(),
+      age: Yup.number(),
+      weight: Yup.number(),
+      height: Yup.number(),
+    });
+
+    if (!(await updateSchema.isValid(this.req.body)))
+      return this.res
+        .status(400)
+        .json({ error: StudentsValidator.SCHEMA_VALIDATION_ERROR });
+  }
+
+  validateExistingStudent(student) {
+    if (!student)
+      return this.res
+        .status(400)
+        .json({ error: StudentsValidator.STUDENT_NOT_FOUND_ERROR });
   }
 }
 
